@@ -33,10 +33,12 @@ by firmware programming).
 def setup():
     check_bootsec()
     print("Performing initial setup")
-    # uos.VfsLfs2.mkfs(bdev)
-    # vfs = uos.VfsLfs2(bdev)
-    uos.VfsFat.mkfs(bdev)
-    vfs = uos.VfsFat(bdev)
+    if 'ESP32S3 ' in uos.uname().machine: # feature flag
+        uos.VfsFat.mkfs(bdev)
+        vfs = uos.VfsFat(bdev)
+    else:
+        uos.VfsLfs2.mkfs(bdev)
+        vfs = uos.VfsLfs2(bdev)
     uos.mount(vfs, "/")
     with open("boot.py", "w") as f:
         f.write(
